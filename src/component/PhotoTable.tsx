@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 
@@ -11,6 +12,7 @@ import {
 import { GET_PHOTOS } from '../query/GetPhotos';
 import SearchBar from './Searchbar';
 import Modal from './Modal';
+import Paginator from './Paginator';
 
 type Photo = {
     id: number
@@ -34,6 +36,9 @@ type PhotoQuery = {
                 limit: number,
                 page: number,
             },
+        },
+        meta: {
+            totalCount: number,
         }
     }
 }
@@ -66,7 +71,7 @@ const Photos: React.FC = () => {
     const columns = useMemo(() => [
         columnHelper.accessor('id', {
             header: () => 'ID',
-            cell: info => <button onClick={() => setSelectedImage(info.row.original.thumbnailUrl)}>{info.getValue()}</button>,
+            cell: info => <button className="font-bold" onClick={() => setSelectedImage(info.row.original.thumbnailUrl)}>{info.getValue()}</button>,
         }),
         columnHelper.accessor('title', {
             header: () => 'Title',
@@ -102,32 +107,43 @@ const Photos: React.FC = () => {
                     error && <p>Error :(</p>
                 }
                 {
-                    !loading && !error && <table className="table-auto w-full text-left">
-                        <thead className="bg-green-500 text-white">
-                            {table.getHeaderGroups().map(headerGroup => (
-                                <tr key={headerGroup.id}>
-                                    {headerGroup.headers.map(header => (
-                                        <th key={header.id} className="p-2 font-bold">
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(header.column.columnDef.header, header.getContext())}
-                                        </th>
-                                    ))}
-                                </tr>
-                            ))}
-                        </thead>
-                        <tbody>
-                            {table.getRowModel().rows.map((row, index) => (
-                                <tr key={row.id} className={`${index % 2 === 0 ? 'bg-green-100' : 'bg-white'}`}>
-                                    {row.getVisibleCells().map(cell => (
-                                        <td key={cell.id} className="border p-2">
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    !loading && !error && <>
+                        <table className="my-3 table-auto w-full text-left">
+                            <thead className="bg-green-500 text-white">
+                                {table.getHeaderGroups().map(headerGroup => (
+                                    <tr key={headerGroup.id}>
+                                        {headerGroup.headers.map(header => (
+                                            <th key={header.id} className="p-2 font-bold">
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(header.column.columnDef.header, header.getContext())}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
+                            <tbody>
+                                {table.getRowModel().rows.map((row, index) => (
+                                    <tr key={row.id} className={`${index % 2 === 0 ? 'bg-green-100' : 'bg-white'}`}>
+                                        {row.getVisibleCells().map(cell => (
+                                            <td key={cell.id} className="border p-2">
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div>
+                            Total {data?.photos?.meta.totalCount || 0} results
+                        </div>
+                        <Paginator
+                            total={data?.photos?.meta.totalCount || 0}
+                            current={pageIndex}
+                            pageSize={pageSize}
+                            onPageClick={(page) => setPagination({ pageIndex: page, pageSize })}
+                        />
+                    </>
                 }
             </div>
         </>
