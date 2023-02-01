@@ -6,12 +6,9 @@ import {
     flexRender,
     getCoreRowModel,
     useReactTable,
-    ColumnDef,
     PaginationState,
 } from '@tanstack/react-table'
 import { GET_PHOTOS } from '../query/GetPhotos';
-import ReactModal from 'react-modal';
-import { FaTimes } from "react-icons/fa";
 import SearchBar from './Searchbar';
 import Modal from './Modal';
 
