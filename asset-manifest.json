@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/react-gh-pages/static/css/main.0a044230.css",
-    "main.js": "/react-gh-pages/static/js/main.e3bc8292.js",
-    "static/js/787.1ec9a1e6.chunk.js": "/react-gh-pages/static/js/787.1ec9a1e6.chunk.js",
-    "index.html": "/react-gh-pages/index.html",
-    "main.0a044230.css.map": "/react-gh-pages/static/css/main.0a044230.css.map",
-    "main.e3bc8292.js.map": "/react-gh-pages/static/js/main.e3bc8292.js.map",
-    "787.1ec9a1e6.chunk.js.map": "/react-gh-pages/static/js/787.1ec9a1e6.chunk.js.map"
+    "main.css": "/challenge-apra-ui/static/css/main.0a044230.css",
+    "main.js": "/challenge-apra-ui/static/js/main.6818b8b7.js",
+    "static/js/787.1ec9a1e6.chunk.js": "/challenge-apra-ui/static/js/787.1ec9a1e6.chunk.js",
+    "index.html": "/challenge-apra-ui/index.html",
+    "main.0a044230.css.map": "/challenge-apra-ui/static/css/main.0a044230.css.map",
+    "main.6818b8b7.js.map": "/challenge-apra-ui/static/js/main.6818b8b7.js.map",
+    "787.1ec9a1e6.chunk.js.map": "/challenge-apra-ui/static/js/787.1ec9a1e6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0a044230.css",
-    "static/js/main.e3bc8292.js"
+    "static/js/main.6818b8b7.js"
   ]
 }
