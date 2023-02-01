@@ -7,9 +7,9 @@ test('generates correct page buttons', () => {
 
     const buttons = generatePageButtons(total, current, pageSize);
 
-    expect(buttons).toHaveLength(12);
-    expect(buttons[0]).toEqual({ label: 'first page', page: 0 });
-    expect(buttons[11]).toEqual({ label: 'last page', page: 49 });
+    expect(buttons).toHaveLength(13);
+    expect(buttons[0]).toEqual({ label: 'First', page: 0 });
+    expect(buttons[12]).toEqual({ label: 'Last', page: 49 });
 
     for (let i = 1; i < 11; i++) {
         const button = buttons[i];

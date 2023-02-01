@@ -1,11 +1,13 @@
-export default function generatePageButtons(total: number, current: number, pageSize: number) {
+export default function generatePageButtons(total: number, current: number, pageSize: number, maxButtonsGenerated: number = 10) {
     const result = [];
 
-    const totalPages = Math.ceil(total / pageSize);
-    const firstPage = Math.max(0, current - 5);
-    const lastPage = Math.min(totalPages - 1, current + 4);
+    const half = Math.ceil(maxButtonsGenerated / 2);
 
-    result.push({ label: 'first page', page: 0 });
+    const totalPages = Math.ceil(total / pageSize);
+    const firstPage = Math.max(0, current - half);
+    const lastPage = Math.min(totalPages - 1, current + half);
+
+    result.push({ label: 'First', page: 0 });
 
     for (let i = firstPage; i <= lastPage; i++) {
         
@@ -16,7 +18,7 @@ export default function generatePageButtons(total: number, current: number, page
         });
     }
 
-    result.push({ label: 'last page', page: totalPages - 1 });
+    result.push({ label: 'Last', page: totalPages - 1 });
 
     return result;
 }
