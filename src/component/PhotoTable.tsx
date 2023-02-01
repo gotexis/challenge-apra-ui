@@ -13,6 +13,7 @@ import { GET_PHOTOS } from '../query/GetPhotos';
 import SearchBar from './Searchbar';
 import Modal from './Modal';
 import Paginator from './Paginator';
+import { FaSpinner } from 'react-icons/fa';
 
 type Photo = {
     id: number
@@ -43,6 +44,8 @@ type PhotoQuery = {
     }
 }
 
+const empty: Photo[] = [];
+
 const Photos: React.FC = () => {
     const [search, setSearch] = useState<string>('');
     const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
@@ -63,7 +66,15 @@ const Photos: React.FC = () => {
     };
 
     const { loading, error, data } = useQuery<PhotoQuery>(GET_PHOTOS, { variables: options });
-    const photosData = data?.photos?.data || [];
+
+    // cache the previous data and only update the data if loading finished
+    const [cachedData, setCachedData] = useState<Photo[]>(empty);
+    const photosData = useMemo(() => {
+        if (loading) return cachedData;
+        setCachedData(data?.photos?.data || empty);
+        return data?.photos?.data || empty;
+    }, [data, loading, cachedData]);
+    
 
     const [selectedImage, setSelectedImage] = useState<string | undefined>();
 
@@ -91,6 +102,7 @@ const Photos: React.FC = () => {
         getCoreRowModel: getCoreRowModel(),
     })
 
+    if (error) return <p>Error :(</p>;
 
     return (
         <>
@@ -98,53 +110,49 @@ const Photos: React.FC = () => {
                 image={selectedImage}
                 onClose={() => setSelectedImage(undefined)}
             />
-            <div className="p-2 max-w-screen-lg flex flex-col justify-center m-auto">
+            <div className="p-2 max-w-screen-lg flex flex-col justify-center m-auto relative">
                 <SearchBar onSubmit={setSearch} />
-                {
-                    loading && <p>Loading...</p>
-                }
-                {
-                    error && <p>Error :(</p>
-                }
-                {
-                    !loading && !error && <>
-                        <table className="my-3 table-auto w-full text-left">
-                            <thead className="bg-green-500 text-white">
-                                {table.getHeaderGroups().map(headerGroup => (
-                                    <tr key={headerGroup.id}>
-                                        {headerGroup.headers.map(header => (
-                                            <th key={header.id} className="p-2 font-bold">
-                                                {header.isPlaceholder
-                                                    ? null
-                                                    : flexRender(header.column.columnDef.header, header.getContext())}
-                                            </th>
-                                        ))}
-                                    </tr>
+                {(loading || !data) && (
+                    <div className="bg-white/75 absolute inset-0 flex justify-center items-center flex-row">
+                        Loading...
+                        <FaSpinner className="animate-spin"/>
+                    </div>
+                )}
+                <table className="my-3 table-auto w-full text-left">
+                    <thead className="bg-green-500 text-white">
+                        {table.getHeaderGroups().map(headerGroup => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map(header => (
+                                    <th key={header.id} className="p-2 font-bold">
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(header.column.columnDef.header, header.getContext())}
+                                    </th>
                                 ))}
-                            </thead>
-                            <tbody>
-                                {table.getRowModel().rows.map((row, index) => (
-                                    <tr key={row.id} className={`${index % 2 === 0 ? 'bg-green-100' : 'bg-white'}`}>
-                                        {row.getVisibleCells().map(cell => (
-                                            <td key={cell.id} className="border p-2">
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </td>
-                                        ))}
-                                    </tr>
+                            </tr>
+                        ))}
+                    </thead>
+                    <tbody>
+                        {table.getRowModel().rows.map((row, index) => (
+                            <tr key={row.id} className={`${index % 2 === 0 ? 'bg-green-100' : 'bg-white'}`}>
+                                {row.getVisibleCells().map(cell => (
+                                    <td key={cell.id} className="border p-2">
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    </td>
                                 ))}
-                            </tbody>
-                        </table>
-                        <div>
-                            Total {data?.photos?.meta.totalCount || 0} results
-                        </div>
-                        <Paginator
-                            total={data?.photos?.meta.totalCount || 0}
-                            current={pageIndex}
-                            pageSize={pageSize}
-                            onPageClick={(page) => setPagination({ pageIndex: page, pageSize })}
-                        />
-                    </>
-                }
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div>
+                    Total {data?.photos?.meta.totalCount || 0} results
+                </div>
+                <Paginator
+                    total={data?.photos?.meta.totalCount || 0}
+                    current={pageIndex}
+                    pageSize={pageSize}
+                    onPageClick={(page) => setPagination({ pageIndex: page, pageSize })}
+                />
             </div>
         </>
     )

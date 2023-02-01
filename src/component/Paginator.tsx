@@ -9,11 +9,11 @@ export default function Paginator(
   const mobileButtons = generatePageButtons(total, current, pageSize, 3)
 
   return (
-    <nav >
+    <nav>
       <ul className="inline-flex items-center -space-x-px max-sm:hidden">
         {
           desktopButtons.map(
-            (button) => <li key={button.page}>
+            (button) => <li key={button.label}>
               <button
                 onClick={() => {
                   onPageClick(button.page);
@@ -49,6 +49,6 @@ export default function Paginator(
           )
         }
       </ul>
-    </nav >
+    </nav>
   );
 } 
